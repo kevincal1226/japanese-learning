@@ -1,0 +1,44 @@
+[
+ {
+  "id": "hiragana",
+  "label": "Hiragana",
+  "type": "kana",
+  "groups": 2
+ },
+ {
+  "id": "katakana",
+  "label": "Katakana",
+  "type": "kana",
+  "groups": 2
+ },
+ {
+  "id": "n5",
+  "label": "JLPT N5",
+  "type": "kanji",
+  "groups": 2
+ },
+ {
+  "id": "n4",
+  "label": "JLPT N4",
+  "type": "kanji",
+  "groups": 3
+ },
+ {
+  "id": "n3",
+  "label": "JLPT N3",
+  "type": "kanji",
+  "groups": 7
+ },
+ {
+  "id": "n2",
+  "label": "JLPT N2",
+  "type": "kanji",
+  "groups": 7
+ },
+ {
+  "id": "n1",
+  "label": "JLPT N1",
+  "type": "kanji",
+  "groups": 25
+ }
+]

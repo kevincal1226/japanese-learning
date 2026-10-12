@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Kanji Flashcards</title>
+  <meta name="theme-color" content="#efefef">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Kanji">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <button id="menu-button" class="hamburger" aria-label="Select level">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="tally">
+        <svg class="tally-icon" viewBox="0 0 24 24" aria-label="Correct"><path d="M3 13.5l6 6L21 5" fill="none" stroke="#5aba36" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="correct-count">0</span>
+        <svg class="tally-icon" viewBox="0 0 24 24" aria-label="Wrong"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="#ea3423" stroke-width="2.6" stroke-linecap="round"/></svg>
+        <span id="wrong-count">0</span>
+        <span id="remaining" class="remaining">Remaining: 0</span>
+      </div>
+    </header>
+
+    <main id="quiz" class="quiz">
+      <section id="card" class="card"></section>
+      <nav id="prompt-toggle" class="toggle prompt-toggle"></nav>
+      <section id="options" class="options"></section>
+      <nav id="answer-toggle" class="toggle answer-toggle"></nav>
+    </main>
+  </div>
+
+  <div id="sheet" class="sheet" aria-hidden="true">
+    <div class="sheet-header">
+      <h1 id="sheet-title">Select Level</h1>
+      <button id="sheet-close" class="sheet-close">Close</button>
+    </div>
+    <div class="sheet-body">
+      <div id="level-pane" class="pane">
+        <p class="sheet-intro">Select your level and group from the grid. Each group contains approximately 50 flashcards. Your high score for each group is displayed inside the corresponding box.</p>
+        <div id="level-grid" class="level-grid"></div>
+      </div>
+      <div id="settings-pane" class="pane" hidden>
+        <div class="settings-row">
+          <span>Shuffle cards</span>
+          <label class="switch"><input type="checkbox" id="setting-shuffle"><span></span></label>
+        </div>
+        <div class="settings-row">
+          <span>Play audio after answering</span>
+          <label class="switch"><input type="checkbox" id="setting-autoplay"><span></span></label>
+        </div>
+        <div class="settings-row">
+          <span>High scores</span>
+          <button id="reset-scores" class="settings-button">Reset</button>
+        </div>
+        <div class="sources">
+          <h2>Data sources</h2>
+          <p>Kanji meanings and on/kun readings: <a href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project" target="_blank" rel="noopener">KANJIDIC2</a>. Example words: <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" target="_blank" rel="noopener">JMdict</a>. Both are the property of the <a href="https://www.edrdg.org/" target="_blank" rel="noopener">Electronic Dictionary Research and Development Group</a> and are used under the <a href="https://www.edrdg.org/edrdg/licence.html" target="_blank" rel="noopener">EDRDG licence</a> (CC BY-SA 4.0).</p>
+          <p>JLPT level lists: Jonathan Waller's lists (tanos.co.uk), as used by <a href="https://jisho.org" target="_blank" rel="noopener">jisho.org</a>. The JLPT has not published official kanji lists since 2010.</p>
+          <p>Kana: standard Hepburn romanization.</p>
+        </div>
+      </div>
+    </div>
+    <nav class="tabbar">
+      <button id="tab-level" class="tab active">
+        <svg viewBox="0 0 28 28" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="3" height="3" rx=".5"/><rect x="3" y="10.5" width="3" height="3" rx=".5"/><rect x="3" y="16" width="3" height="3" rx=".5"/><rect x="3" y="21.5" width="3" height="3" rx=".5"/><path d="M9 6.5h17M9 12h17M9 17.5h17M9 23h17"/></g></svg>
+        <span>Select Level</span>
+      </button>
+      <button id="tab-settings" class="tab">
+        <svg viewBox="0 0 28 28" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M12.2 2.5h3.6l.6 3.1 2.2.9 2.6-1.8 2.6 2.6-1.8 2.6.9 2.2 3.1.6v3.6l-3.1.6-.9 2.2 1.8 2.6-2.6 2.6-2.6-1.8-2.2.9-.6 3.1h-3.6l-.6-3.1-2.2-.9-2.6 1.8-2.6-2.6 1.8-2.6-.9-2.2-3.1-.6v-3.6l3.1-.6.9-2.2-1.8-2.6 2.6-2.6 2.6 1.8 2.2-.9z"/><circle cx="14" cy="14" r="4"/></g></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
