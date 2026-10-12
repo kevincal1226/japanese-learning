@@ -441,7 +441,7 @@ body.sheet-open .sheet { transform: translateY(0); }
 
 .level-grid {
   display: grid;
-  grid-template-columns: 56px repeat(8, minmax(0, 1fr));
+  grid-template-columns: 56px repeat(9, minmax(0, 1fr));
   column-gap: 5px;
   row-gap: 10px;
   margin: 36px 9px 24px 9px;

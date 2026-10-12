@@ -55,6 +55,8 @@
   let animating = false;
 
   const GROUPS_PER_ROW = 8;
+  // Group value for a session over every card in a level.
+  const ALL = "all";
 
   // ---------- helpers ----------
 
@@ -90,8 +92,15 @@
     return decks.find((d) => d.id === id);
   }
 
+  function cardsFor(deckId, group) {
+    const data = deckData[deckId];
+    if (group !== ALL) return data.groups[group];
+    if (!data.all) data.all = [].concat(...data.groups);
+    return data.all;
+  }
+
   function groupCards() {
-    return deckData[session.deck].groups[session.group];
+    return cardsFor(session.deck, session.group);
   }
 
   function currentIndex() {
@@ -164,8 +173,8 @@
   }
 
   function startSession(deckId, group) {
-    return loadDeck(deckId).then((data) => {
-      const count = data.groups[group].length;
+    return loadDeck(deckId).then(() => {
+      const count = cardsFor(deckId, group).length;
       const order = Array.from({ length: count }, (_, i) => i);
       session = {
         deck: deckId,
@@ -285,7 +294,7 @@
     const total = session.order.length;
     return (
       '<div class="card-footer"><span>' +
-      esc(info.label + " Group " + (session.group + 1)) +
+      esc(info.label + (session.group === ALL ? " All" : " Group " + (session.group + 1))) +
       "</span><span>" +
       (session.pos + 1) + " of " + total +
       "</span></div>"
@@ -376,7 +385,7 @@
   function renderOptions() {
     if (session.done) {
       const info = deckInfo(session.deck);
-      const hasNext = session.group + 1 < info.groups;
+      const hasNext = session.group !== ALL && session.group + 1 < info.groups;
       els.options.innerHTML =
         '<button class="option" style="grid-column:1/-1" data-action="restart">Restart group</button>' +
         '<button class="option" style="grid-column:1/-1" data-action="' + (hasNext ? "next-group" : "select") + '">' +
@@ -427,8 +436,13 @@
   }
 
   function renderLevelGrid() {
+    const cell = (deck, group, scores) => {
+      const score = scores[group] === undefined ? 0 : scores[group];
+      return '<button class="cell ' + scoreClass(score) + '" data-deck="' + deck.id + '" data-group="' + group + '">' + score + "</button>";
+    };
     let html = '<div class="head label">Group #</div>';
     for (let c = 1; c <= GROUPS_PER_ROW; c++) html += '<div class="head">' + c + "</div>";
+    html += '<div class="head">All</div>';
     for (const deck of decks) {
       const rows = Math.ceil(deck.groups / GROUPS_PER_ROW);
       const scores = highScores[deck.id] || {};
@@ -436,14 +450,10 @@
         html += '<div class="row-label">' + (r === 0 ? esc(deck.label) : "") + "</div>";
         for (let c = 0; c < GROUPS_PER_ROW; c++) {
           const g = r * GROUPS_PER_ROW + c;
-          if (g >= deck.groups) {
-            html += '<div class="cell"></div>';
-            continue;
-          }
-          const score = scores[g] === undefined ? 0 : scores[g];
-          html +=
-            '<button class="cell ' + scoreClass(score) + '" data-deck="' + deck.id + '" data-group="' + g + '">' + score + "</button>";
+          html += g < deck.groups ? cell(deck, g, scores) : '<div class="cell"></div>';
         }
+        // The All box sits on the level's first row only.
+        html += r === 0 ? cell(deck, ALL, scores) : "<div></div>";
       }
     }
     els.levelGrid.innerHTML = html;
@@ -524,7 +534,8 @@
       const cell = e.target.closest("button.cell");
       if (!cell) return;
       closeSheet();
-      startSession(cell.dataset.deck, Number(cell.dataset.group));
+      const group = cell.dataset.group;
+      startSession(cell.dataset.deck, group === ALL ? ALL : Number(group));
     });
 
     els.shuffle.addEventListener("change", () => {
@@ -588,7 +599,7 @@
     const saved = store.get("session", null);
     if (!saved || !deckInfo(saved.deck)) return Promise.resolve(false);
     return loadDeck(saved.deck).then((data) => {
-      const group = data.groups[saved.group];
+      const group = saved.group === ALL || data.groups[saved.group] ? cardsFor(saved.deck, saved.group) : null;
       if (!group || !Array.isArray(saved.order) || saved.order.length !== group.length) return false;
       session = saved;
       if (!session.done && !Array.isArray(session.options)) session.options = makeOptions();
